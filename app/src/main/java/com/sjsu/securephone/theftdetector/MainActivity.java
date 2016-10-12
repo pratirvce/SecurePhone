@@ -2,8 +2,10 @@ package com.sjsu.securephone.theftdetector;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -37,6 +39,10 @@ public class MainActivity extends AppCompatActivity implements
     private static final int RC_READ_SMS = 101;
 
     private static final String TAG = "MainActivity";
+    private Context context;// = this;
+    private SharedPreferences sharedPref;// = context.getSharedPreferences(
+            //getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+    private SharedPreferences.Editor editor;// = sharedPref.edit();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +53,14 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.tabanim_toolbar);
         setSupportActionBar(toolbar);
         readSMSPerm();
+
+        // used for the allowPower flag
+        // by default, when app is started, the flag will always be false
+        context = this;
+        sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
+        editor.putBoolean(getString(R.string.preference_allow_power_key), false);
+        editor.commit();
 
     }
 
@@ -166,15 +180,22 @@ public class MainActivity extends AppCompatActivity implements
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_POWER) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
-                Log.d(TAG, "dispatchKeyEvent KeyEvent.KEYCODE_POWER");
 
-                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-                sendBroadcast(closeDialog);
+                // get the allowPower flag
+                //SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+                boolean allowPower = sharedPref.getBoolean(getString(R.string.preference_allow_power_key), false);
+                Log.d(TAG, "dispatchKeyEvent, allowPower: " + Boolean.toString(allowPower));
 
-                Intent dialogIntent = new Intent(this, DialogActivity.class);
-                startActivityForResult(dialogIntent, 1);
+                if(!allowPower) {
+                    Log.d(TAG, "dispatchKeyEvent KeyEvent.KEYCODE_POWER");
+
+                    Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+                    sendBroadcast(closeDialog);
+
+                    Intent dialogIntent = new Intent(this, DialogActivity.class);
+                    startActivityForResult(dialogIntent, 1);
+                }
             }
-
         }
         return super.dispatchKeyEvent(event);
     }
@@ -184,9 +205,36 @@ public class MainActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
+
             if(resultCode == Activity.RESULT_OK){
-                String result=data.getStringExtra("result");
-                if(result.equals("true")){
+                boolean result = data.getBooleanExtra("result", false);
+
+                if(result) {
+                    // update SharedPreferences so that the flag is true now
+                    //Context context = this;
+                    //SharedPreferences sharedPref = context.getSharedPreferences(
+                            //getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+                    //SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putBoolean(getString(R.string.preference_allow_power_key), true);
+                    editor.commit();
+
+                    // start a counter service which will change the flag back to false after 1 min
+                    startService(new Intent(this, FlagCounterService.class));
+
+                    // password is entered correctly so prompt user to power off again
+                    // display Dialog with this message
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                    alertDialogBuilder.setMessage("Password is correct. Please hold the power button again.");
+                    alertDialogBuilder.setPositiveButton("OKAY", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Log.d(TAG, "User must try to power off again.");
+                        }
+                    });
+                    alertDialogBuilder.create();
+                    alertDialogBuilder.show();
+
+                    /*
                     Log.d(TAG, "Password entered is correct. Continue to power dialog.");
 
                     // try to simulate the power button long press so the power dialog can be displayed
@@ -195,8 +243,9 @@ public class MainActivity extends AppCompatActivity implements
 
                     super.dispatchKeyEvent(test);
                     onKeyLongPress(KeyEvent.KEYCODE_POWER, kdown);
+                    */
                 }
-                else if(result.equals("false")){
+                else if(!result){
                     Log.e(TAG, "Wrong password is entered so don't show the power button.");
                 }
             }

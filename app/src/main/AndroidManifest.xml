@@ -22,7 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DialogActivity"></activity>
+        <activity android:name=".DialogActivity" />
+
+        <service
+            android:name="com.sjsu.securephone.theftdetector.FlagCounterService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

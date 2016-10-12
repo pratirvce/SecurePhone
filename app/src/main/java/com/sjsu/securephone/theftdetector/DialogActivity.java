@@ -31,7 +31,7 @@ public class DialogActivity extends AppCompatActivity {
     public void onEnter(View view) {
         Log.d(TAG, "onEnter()");
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("result","true");
+        returnIntent.putExtra("result", true);
         setResult(Activity.RESULT_OK,returnIntent);
         finish();
 
@@ -40,7 +40,7 @@ public class DialogActivity extends AppCompatActivity {
     public void onCancel(View view) {
         Log.d(TAG, "onCancel()");
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("result","false");
+        returnIntent.putExtra("result",false);
         setResult(Activity.RESULT_OK,returnIntent);
         finish();
     }
@@ -49,6 +49,5 @@ public class DialogActivity extends AppCompatActivity {
     protected void onDestroy(){
         super.onDestroy();
         Log.d(TAG, "onDestroy()");
-        finish();
     }
 }
