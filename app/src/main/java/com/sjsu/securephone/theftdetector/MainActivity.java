@@ -39,10 +39,9 @@ public class MainActivity extends AppCompatActivity implements
     private static final int RC_READ_SMS = 101;
 
     private static final String TAG = "MainActivity";
-    private Context context;// = this;
-    private SharedPreferences sharedPref;// = context.getSharedPreferences(
-            //getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-    private SharedPreferences.Editor editor;// = sharedPref.edit();
+    private Context context;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +53,20 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
         readSMSPerm();
 
-        // used for the allowPower flag
-        // by default, when app is started, the flag will always be false
+        // initialize SharedPreferences
         context = this;
         sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        // check if user has logged on before
+        boolean loggedOn = sharedPref.getBoolean(getString(R.string.preference_logged_on_key), false);
+        if(!loggedOn){
+            //start the login activity
+            Intent loginActivity = new Intent(this, LoginActivity.class);
+            startActivity(loginActivity);
+        }
+
+        // used for the allowPower flag
+        // by default, when app is started, the flag will always be false
         editor = sharedPref.edit();
         editor.putBoolean(getString(R.string.preference_allow_power_key), false);
         editor.commit();
@@ -181,6 +190,15 @@ public class MainActivity extends AppCompatActivity implements
         if (event.getKeyCode() == KeyEvent.KEYCODE_POWER) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
 
+                // at this point, must update location/time to firebase
+                /*
+                *
+                *
+                *
+                *
+                *
+                 */
+
                 // get the allowPower flag
                 //SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
                 boolean allowPower = sharedPref.getBoolean(getString(R.string.preference_allow_power_key), false);
@@ -246,8 +264,28 @@ public class MainActivity extends AppCompatActivity implements
                     */
                 }
                 else if(!result){
-                    Log.e(TAG, "Wrong password is entered so don't show the power button.");
+                    Log.d(TAG, "User cannot power off.");
                 }
+            }
+            else if(resultCode == Activity.RESULT_CANCELED){
+
+                // at this point, must update location/time to firebase AND SEND EMAIL
+                /*
+                *
+                *
+                *
+                *
+                *
+                 */
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setMessage("Password is incorrect!");
+                alertDialogBuilder.setPositiveButton("OKAY", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                alertDialogBuilder.create();
+                alertDialogBuilder.show();
             }
         }
     }
