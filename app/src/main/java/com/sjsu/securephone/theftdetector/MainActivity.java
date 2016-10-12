@@ -1,15 +1,21 @@
 package com.sjsu.securephone.theftdetector;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -18,6 +24,8 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import pub.devrel.easypermissions.EasyPermissions;
+
+import static android.os.SystemClock.uptimeMillis;
 
 /**
  * Created by Group 7 on 10/11/2016.
@@ -30,6 +38,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final int RC_READ_SMS = 101;
 
+    private static final String TAG = "MainActivity";
+    private Context context;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +52,24 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.tabanim_toolbar);
         setSupportActionBar(toolbar);
         readSMSPerm();
+
+        // initialize SharedPreferences
+        context = this;
+        sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        // check if user has logged on before
+        boolean loggedOn = sharedPref.getBoolean(getString(R.string.preference_logged_on_key), false);
+        if(!loggedOn){
+            //start the login activity
+            Intent loginActivity = new Intent(this, LoginActivity.class);
+            startActivity(loginActivity);
+        }
+
+        // used for the allowPower flag
+        // by default, when app is started, the flag will always be false
+        editor = sharedPref.edit();
+        editor.putBoolean(getString(R.string.preference_allow_power_key), false);
+        editor.commit();
 
     }
 
@@ -148,5 +179,118 @@ public class MainActivity extends AppCompatActivity implements
         Log.d("", "onPermissionsDenied:" + requestCode + ":" + perms.size());
         Toast.makeText(getApplicationContext(), "Permission is Compulsory to Proceed", Toast.LENGTH_SHORT).show();
     }
+
+    //*********************************************************************************************
+    //  START CODE: Theft Detection
+    //*********************************************************************************************
+
+    //  detects long press of power button, dismisses power menu, launches password prompt activity
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_POWER) {
+            if (event.getAction() == KeyEvent.ACTION_UP) {
+
+                // at this point, must update location/time to firebase
+                /*
+                *
+                *
+                *
+                *
+                *
+                 */
+
+                // get the allowPower flag
+                //SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+                boolean allowPower = sharedPref.getBoolean(getString(R.string.preference_allow_power_key), false);
+                Log.d(TAG, "dispatchKeyEvent, allowPower: " + Boolean.toString(allowPower));
+
+                if(!allowPower) {
+                    Log.d(TAG, "dispatchKeyEvent KeyEvent.KEYCODE_POWER");
+
+                    Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+                    sendBroadcast(closeDialog);
+
+                    Intent dialogIntent = new Intent(this, DialogActivity.class);
+                    startActivityForResult(dialogIntent, 1);
+                }
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    // decides what to do based on password input
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+
+            if(resultCode == Activity.RESULT_OK){
+                boolean result = data.getBooleanExtra("result", false);
+
+                if(result) {
+                    // update SharedPreferences so that the flag is true now
+                    //Context context = this;
+                    //SharedPreferences sharedPref = context.getSharedPreferences(
+                            //getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+                    //SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putBoolean(getString(R.string.preference_allow_power_key), true);
+                    editor.commit();
+
+                    // start a counter service which will change the flag back to false after 1 min
+                    startService(new Intent(this, FlagCounterService.class));
+
+                    // password is entered correctly so prompt user to power off again
+                    // display Dialog with this message
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                    alertDialogBuilder.setMessage("Password is correct. Please hold the power button again.");
+                    alertDialogBuilder.setPositiveButton("OKAY", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Log.d(TAG, "User must try to power off again.");
+                        }
+                    });
+                    alertDialogBuilder.create();
+                    alertDialogBuilder.show();
+
+                    /*
+                    Log.d(TAG, "Password entered is correct. Continue to power dialog.");
+
+                    // try to simulate the power button long press so the power dialog can be displayed
+                    KeyEvent kdown = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_POWER);
+                    KeyEvent test = new KeyEvent(2805465, uptimeMillis(), KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_POWER, 2);
+
+                    super.dispatchKeyEvent(test);
+                    onKeyLongPress(KeyEvent.KEYCODE_POWER, kdown);
+                    */
+                }
+                else if(!result){
+                    Log.d(TAG, "User cannot power off.");
+                }
+            }
+            else if(resultCode == Activity.RESULT_CANCELED){
+
+                // at this point, must update location/time to firebase AND SEND EMAIL
+                /*
+                *
+                *
+                *
+                *
+                *
+                 */
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setMessage("Password is incorrect!");
+                alertDialogBuilder.setPositiveButton("OKAY", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                alertDialogBuilder.create();
+                alertDialogBuilder.show();
+            }
+        }
+    }
+    //*********************************************************************************************
+    //  END CODE: Theft Detection
+    //*********************************************************************************************
 
 }
