@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "428360940663",
+    "firebase_url": "https://securephone-b36f4.firebaseio.com",
+    "project_id": "securephone-b36f4",
+    "storage_bucket": "securephone-b36f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428360940663:android:9f767740c6982952",
+        "android_client_info": {
+          "package_name": "com.sjsu.securephone.theftdetector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "428360940663-bo175pj0qgrlqud9k28aa3fu4rqkfa7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADvnQvV_1HHW5dj7LrRnMLUd17OyJsRiQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
