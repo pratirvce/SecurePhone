@@ -25,8 +25,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import static android.os.SystemClock.uptimeMillis;
-
 /**
  * Created by Group 7 on 10/11/2016.
  */
@@ -58,12 +56,12 @@ public class MainActivity extends AppCompatActivity implements
         sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         // check if user has logged on before
-        boolean loggedOn = sharedPref.getBoolean(getString(R.string.preference_logged_on_key), false);
-        if(!loggedOn){
-            //start the login activity
-            Intent loginActivity = new Intent(this, LoginActivity.class);
-            startActivity(loginActivity);
-        }
+//        boolean loggedOn = sharedPref.getBoolean(getString(R.string.preference_logged_on_key), false);
+//        if(!loggedOn){
+//            //start the login activity
+//            Intent loginActivity = new Intent(this, LoginActivity.class);
+//            startActivity(loginActivity);
+//        }
 
         // used for the allowPower flag
         // by default, when app is started, the flag will always be false
@@ -71,6 +69,18 @@ public class MainActivity extends AppCompatActivity implements
         editor.putBoolean(getString(R.string.preference_allow_power_key), false);
         editor.commit();
 
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        // check if user has logged on before
+        boolean loggedOn = sharedPref.getBoolean(getString(R.string.preference_logged_on_key), false);
+        if(!loggedOn){
+            //start the login activity
+            Intent loginActivity = new Intent(this, LoginActivity.class);
+            startActivity(loginActivity);
+        }
     }
 
     private void setupViewPager(ViewPager viewPager) {
