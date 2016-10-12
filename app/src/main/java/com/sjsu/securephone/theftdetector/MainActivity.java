@@ -1,15 +1,19 @@
 package com.sjsu.securephone.theftdetector;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -18,6 +22,8 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import pub.devrel.easypermissions.EasyPermissions;
+
+import static android.os.SystemClock.uptimeMillis;
 
 /**
  * Created by Group 7 on 10/11/2016.
@@ -29,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements
     private boolean doubleBackToExitPressedOnce=false;
 
     private static final int RC_READ_SMS = 101;
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,5 +156,54 @@ public class MainActivity extends AppCompatActivity implements
         Log.d("", "onPermissionsDenied:" + requestCode + ":" + perms.size());
         Toast.makeText(getApplicationContext(), "Permission is Compulsory to Proceed", Toast.LENGTH_SHORT).show();
     }
+
+    //*********************************************************************************************
+    //  START CODE: Theft Detection
+    //*********************************************************************************************
+
+    //  detects long press of power button, dismisses power menu, launches password prompt activity
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_POWER) {
+            if (event.getAction() == KeyEvent.ACTION_UP) {
+                Log.d(TAG, "dispatchKeyEvent KeyEvent.KEYCODE_POWER");
+
+                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+                sendBroadcast(closeDialog);
+
+                Intent dialogIntent = new Intent(this, DialogActivity.class);
+                startActivityForResult(dialogIntent, 1);
+            }
+
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    // decides what to do based on password input
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String result=data.getStringExtra("result");
+                if(result.equals("true")){
+                    Log.d(TAG, "Password entered is correct. Continue to power dialog.");
+
+                    // try to simulate the power button long press so the power dialog can be displayed
+                    KeyEvent kdown = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_POWER);
+                    KeyEvent test = new KeyEvent(2805465, uptimeMillis(), KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_POWER, 2);
+
+                    super.dispatchKeyEvent(test);
+                    onKeyLongPress(KeyEvent.KEYCODE_POWER, kdown);
+                }
+                else if(result.equals("false")){
+                    Log.e(TAG, "Wrong password is entered so don't show the power button.");
+                }
+            }
+        }
+    }
+    //*********************************************************************************************
+    //  END CODE: Theft Detection
+    //*********************************************************************************************
 
 }
