@@ -54,12 +54,12 @@ public class LocationFragment extends Fragment {
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
 
-        longitudeValueBest = (TextView) getView().findViewById(R.id.longitudeValueBest);
-        latitudeValueBest = (TextView) getView().findViewById(R.id.latitudeValueBest);
-        longitudeValueGPS = (TextView) getView().findViewById(R.id.longitudeValueGPS);
-        latitudeValueGPS = (TextView) getView().findViewById(R.id.latitudeValueGPS);
-        longitudeValueNetwork = (TextView) getView().findViewById(R.id.longitudeValueNetwork);
-        latitudeValueNetwork = (TextView) getView().findViewById(R.id.latitudeValueNetwork);
+        longitudeValueBest = (TextView) view.findViewById(R.id.longitudeValueBest);
+        latitudeValueBest = (TextView) view.findViewById(R.id.latitudeValueBest);
+        longitudeValueGPS = (TextView) view.findViewById(R.id.longitudeValueGPS);
+        latitudeValueGPS = (TextView) view.findViewById(R.id.latitudeValueGPS);
+        longitudeValueNetwork = (TextView) view.findViewById(R.id.longitudeValueNetwork);
+        latitudeValueNetwork = (TextView) view.findViewById(R.id.latitudeValueNetwork);
 
         return view;
     }
