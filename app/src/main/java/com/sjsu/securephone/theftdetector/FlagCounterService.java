@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.KeyEvent;
 
 public class FlagCounterService extends Service {
 
@@ -66,5 +67,6 @@ public class FlagCounterService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
     }
+
 
 }

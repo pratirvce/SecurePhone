@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -31,6 +32,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +53,7 @@ public class LoginActivity extends Activity {
     private Context context;
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
+    private String deviceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,12 @@ public class LoginActivity extends Activity {
         context = this;
         sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         editor = sharedPref.edit();
+
+        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        deviceId = telephonyManager.getDeviceId();
+
+        editor.putString(getString(R.string.preferences_device_id), deviceId);
+        editor.commit();
 
         Log.d(TAG, "onCreate()");
     }
@@ -80,13 +90,15 @@ public class LoginActivity extends Activity {
             editor.commit();
 
             // also update email and password to firebase here
-            /*
-            *
-            *
-            *
-            *
-            *
-             */
+            if( (deviceId != null) && (!deviceId.isEmpty()) ){
+                Firebase.setAndroidContext(this);
+                Firebase ref = new Firebase(Config.FIREBASE_URL);
+                ref.child(deviceId).child("email").setValue(email);
+                ref.child(deviceId).child("password").setValue(password);
+
+            }
+
+
 
             Log.d(TAG, "Sign in is complete");
             finish();
