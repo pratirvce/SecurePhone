@@ -37,6 +37,9 @@ public class LocationFragment extends Fragment {
     TextView longitudeValueBest, latitudeValueBest;
     TextView longitudeValueGPS, latitudeValueGPS;
     TextView longitudeValueNetwork, latitudeValueNetwork;
+    Button btntoggleNetworkUpdates;
+    Button btntoggleGPSUpdates;
+    Button btntoggleBestUpdates;
 
     private Tracker mTracker;
     private static final String ARG_TEXT = "text";
@@ -60,6 +63,35 @@ public class LocationFragment extends Fragment {
         latitudeValueGPS = (TextView) view.findViewById(R.id.latitudeValueGPS);
         longitudeValueNetwork = (TextView) view.findViewById(R.id.longitudeValueNetwork);
         latitudeValueNetwork = (TextView) view.findViewById(R.id.latitudeValueNetwork);
+        btntoggleNetworkUpdates = (Button)view.findViewById(R.id.locationControllerNetwork);
+        btntoggleNetworkUpdates.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Toast.makeText(getActivity(),"Your message.", Toast.LENGTH_LONG).show();
+                toggleNetworkUpdates(v);
+
+            }
+        });
+
+        btntoggleGPSUpdates = (Button)view.findViewById(R.id.locationControllerGPS);
+        btntoggleGPSUpdates.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Toast.makeText(getActivity(),"Your message.", Toast.LENGTH_LONG).show();
+                toggleGPSUpdates(v);
+
+            }
+        });
+
+        btntoggleBestUpdates = (Button)view.findViewById(R.id.locationControllerBest);
+        btntoggleBestUpdates.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Toast.makeText(getActivity(),"Your message.", Toast.LENGTH_LONG).show();
+                toggleBestUpdates(v);
+
+            }
+        });
 
         return view;
     }
