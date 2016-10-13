@@ -21,6 +21,7 @@
     <string name="preferences_email_key">pref_email</string>
     <string name="preferences_password">password</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="preferences_device_id">pref_deviceId</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
