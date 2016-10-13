@@ -5,7 +5,8 @@
     <string name="title_build_info">DEVICE</string>
     <string name="title_about_root">About Root</string>
     <string name="share">share</string>
-    <string name="share_text">Hey, I found an app that lets me check my SIM Card Info and much more. Try this awesome app - https://play.google.com/store/apps/details?id=com.simcard.siminfo</string><string name="share_subject" />
+    <string name="share_text">Hey, I found an app that lets me check my SIM Card Info and much more. Try this awesome app - https://play.google.com/store/apps/details?id=com.simcard.siminfo</string>
+    <string name="share_subject" />
     <string name="banner_ad_unit_id">ca-app-pub-6553884734105254/8657166655</string>
 
 
@@ -13,4 +14,24 @@
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/dark_blue_primary</item>
     </style>
+
+    <string name="preference_file_key">com.sjsu.securephone.theftdector.PREFERENCE_FILE_KEY</string>
+    <string name="preference_allow_power_key">pref_allowPower</string>
+    <string name="preference_logged_on_key">pref_loggedOn</string>
+    <string name="preferences_email_key">pref_email</string>
+    <string name="preferences_password">password</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 </resources>
