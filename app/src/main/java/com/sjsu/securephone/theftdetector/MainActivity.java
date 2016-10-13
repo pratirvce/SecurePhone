@@ -20,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
+
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -199,18 +201,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_POWER) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
-
-                // at this point, must update location/time to firebase
-                /*
-                *
-                *
-                *
-                *
-                *
-                 */
-
                 // get the allowPower flag
-                //SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
                 boolean allowPower = sharedPref.getBoolean(getString(R.string.preference_allow_power_key), false);
                 Log.d(TAG, "dispatchKeyEvent, allowPower: " + Boolean.toString(allowPower));
 
@@ -239,15 +230,10 @@ public class MainActivity extends AppCompatActivity implements
 
                 if(result) {
                     // update SharedPreferences so that the flag is true now
-                    //Context context = this;
-                    //SharedPreferences sharedPref = context.getSharedPreferences(
-                            //getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-
-                    //SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putBoolean(getString(R.string.preference_allow_power_key), true);
                     editor.commit();
 
-                    // start a counter service which will change the flag back to false after 1 min
+                    // start a counter service which will change the flag back to false after 30 seconds
                     startService(new Intent(this, FlagCounterService.class));
 
                     // password is entered correctly so prompt user to power off again
@@ -262,6 +248,14 @@ public class MainActivity extends AppCompatActivity implements
                     alertDialogBuilder.create();
                     alertDialogBuilder.show();
 
+                    // log tracking information in firebase
+                    Long tsLong = System.currentTimeMillis()/1000;
+                    String deviceId = sharedPref.getString(getString(R.string.preferences_device_id), "null");
+
+                    Firebase.setAndroidContext(this);
+                    Firebase ref = new Firebase(Config.FIREBASE_URL);
+                    ref.child(deviceId).child("tracking_correct_pw").child(tsLong.toString()).setValue("location1");
+
                     /*
                     Log.d(TAG, "Password entered is correct. Continue to power dialog.");
 
@@ -275,18 +269,23 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 else if(!result){
                     Log.d(TAG, "User cannot power off.");
+
+                    Long tsLong = System.currentTimeMillis()/1000;
+                    String deviceId = sharedPref.getString(getString(R.string.preferences_device_id), "null");
+
+                    Firebase.setAndroidContext(this);
+                    Firebase ref = new Firebase(Config.FIREBASE_URL);
+                    ref.child(deviceId).child("tracking_cancelled").child(tsLong.toString()).setValue("locationx");
                 }
             }
             else if(resultCode == Activity.RESULT_CANCELED){
+                // log tracking information in firebase
+                Long tsLong = System.currentTimeMillis()/1000;
+                String deviceId = sharedPref.getString(getString(R.string.preferences_device_id), "null");
 
-                // at this point, must update location/time to firebase AND SEND EMAIL
-                /*
-                *
-                *
-                *
-                *
-                *
-                 */
+                Firebase.setAndroidContext(this);
+                Firebase ref = new Firebase(Config.FIREBASE_URL);
+                ref.child(deviceId).child("tracking_incorrect_pw").child(tsLong.toString()).setValue("location1");
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
                 alertDialogBuilder.setMessage("Password is incorrect!");

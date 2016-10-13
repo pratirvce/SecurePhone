@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -79,5 +80,16 @@ public class DialogActivity extends AppCompatActivity {
 
     private boolean isPasswordValid(String password) {
         return password.length() > 4;
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_POWER) {
+            if (event.getAction() == KeyEvent.ACTION_UP) {
+                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+                sendBroadcast(closeDialog);
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 }
