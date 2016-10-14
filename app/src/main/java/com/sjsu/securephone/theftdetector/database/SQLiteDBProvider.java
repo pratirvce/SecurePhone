@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.google.android.gms.location.sample.locationupdates.Utils.Const;
+
+import com.sjsu.securephone.theftdetector.Utils.Const;
 
 import java.io.File;
 import java.io.FileOutputStream;

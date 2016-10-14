@@ -5,12 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.google.android.gms.location.sample.locationupdates.Utils.LocationVo;
+
+import com.sjsu.securephone.theftdetector.Utils.LocationVo;
 
 import java.util.ArrayList;
 
 /**
- * Created by Grishma on 17/5/16.
+ * Created by Group 7 on 10/11/2016.
  */
 public class LocationDBHelper {
 

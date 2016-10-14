@@ -37,7 +37,7 @@ android:paddingTop="@dimen/activity_vertical_margin">
         android:layout_marginRight="10dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:onClick="startUpdatesButtonHandler"
+
         android:text="@string/start_updates"/>
 
     <Button
@@ -49,7 +49,7 @@ android:paddingTop="@dimen/activity_vertical_margin">
         android:layout_weight="1"
         android:enabled="false"
         android:gravity="center"
-        android:onClick="stopUpdatesButtonHandler"
+
         android:text="@string/stop_updates"/>
 </LinearLayout>
 
@@ -60,7 +60,7 @@ android:paddingTop="@dimen/activity_vertical_margin">
     android:layout_marginEnd="10dp"
     android:layout_marginRight="10dp"
     android:gravity="center"
-    android:onClick="exportDatabaseToSdCard"
+
     android:text="Export database"/>
 
 <TextView
