@@ -3,6 +3,7 @@ package com.sjsu.securephone.theftdetector;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -45,6 +46,11 @@ public class LocationFragment extends Fragment {
     private static final String ARG_TEXT = "text";
 
     private static final String TAG = "LocationFragment";
+
+    private Context context;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
+    String deviceId;
 
 
     @Override
@@ -92,6 +98,10 @@ public class LocationFragment extends Fragment {
 
             }
         });
+
+        context = getActivity();
+        sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        deviceId = sharedPref.getString(getString(R.string.preferences_device_id), "null");
 
         return view;
     }
@@ -224,8 +234,11 @@ public class LocationFragment extends Fragment {
                     Firebase.setAndroidContext(getActivity());
                     Firebase ref = new Firebase(Config.FIREBASE_URL);
                     //Storing values to firebase
-                    ref.child("currLoc/Longitude").setValue(longitudeBest);
-                    ref.child("currLoc/Latitude").setValue(latitudeBest);
+                    Long tsLong = System.currentTimeMillis()/1000;
+                    ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Longitude").setValue(longitudeBest);
+                    ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Latitude").setValue(latitudeBest);
+//                    ref.child("currLoc/Longitude").setValue(longitudeBest);
+//                    ref.child("currLoc/Latitude").setValue(latitudeBest);
                     Toast.makeText(getActivity(), "Best Provider update", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -260,8 +273,11 @@ public class LocationFragment extends Fragment {
                     Firebase.setAndroidContext(getActivity());
                     Firebase ref = new Firebase(Config.FIREBASE_URL);
                     //Storing values to firebase
-                    ref.child("currLoc/Longitude").setValue(longitudeNetwork);
-                    ref.child("currLoc/Latitude").setValue(latitudeNetwork);
+                    Long tsLong = System.currentTimeMillis()/1000;
+                    ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Longitude").setValue(longitudeNetwork);
+                    ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Latitude").setValue(latitudeNetwork);
+//                    ref.child("currLoc/Longitude").setValue(longitudeNetwork);
+//                    ref.child("currLoc/Latitude").setValue(latitudeNetwork);
                     Toast.makeText(getActivity(), "Network Provider update", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -304,8 +320,11 @@ public class LocationFragment extends Fragment {
                     Firebase.setAndroidContext(getActivity());
                     Firebase ref = new Firebase(Config.FIREBASE_URL);
                     //Storing values to firebase
-                    ref.child("Longitude").setValue(longitudeGPS);
-                    ref.child("Latitude").setValue(latitudeGPS);
+                    Long tsLong = System.currentTimeMillis()/1000;
+                    ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Longitude").setValue(longitudeGPS);
+                    ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Latitude").setValue(latitudeGPS);
+//                    ref.child("Longitude").setValue(longitudeGPS);
+//                    ref.child("Latitude").setValue(latitudeGPS);
                     Toast.makeText(getActivity(), "GPS Provider update", Toast.LENGTH_SHORT).show();
                 }
             });
