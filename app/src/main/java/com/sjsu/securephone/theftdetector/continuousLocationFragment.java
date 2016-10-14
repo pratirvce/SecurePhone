@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.analytics.Tracker;
+import com.sjsu.securephone.theftdetector.Utils.Const;
 
 //import com.google.android.gms.ads.AdRequest;
 //import com.google.android.gms.ads.AdView;
@@ -36,10 +37,9 @@ import com.google.android.gms.analytics.Tracker;
  * Created by Group 7 on 10/11/2016.
  */
 
-
 public class continuousLocationFragment extends Fragment {
 
-    protected Button mStartUpdatesButton, mStopUpdatesButton;
+    protected Button mStartUpdatesButton, mStopUpdatesButton, mExportDatabase;
     private boolean mIsServiceStarted = false;
     public static final String EXTRA_NOTIFICATION_ID = "notification_id";
     public static final String ACTION_STOP = "STOP_ACTION";
@@ -81,24 +81,37 @@ public class continuousLocationFragment extends Fragment {
 //        mIsServiceStarted = false;
         mStartUpdatesButton = (Button) view.findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) view.findViewById(R.id.stop_updates_button);
+        mExportDatabase = (Button) view.findViewById(R.id.export_button);
 
-        mStartUpdatesButton.setOnClickListener(new View.OnClickListener(){
+        mStartUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                Toast.makeText(getActivity(),"Network Location Services Started", Toast.LENGTH_LONG).show();
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Network Location Services Started", Toast.LENGTH_LONG).show();
                 startUpdatesButtonHandler(v);
 
             }
         });
 
-        mStopUpdatesButton.setOnClickListener(new View.OnClickListener(){
+        mStopUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                Toast.makeText(getActivity(),"Network Location Services Started", Toast.LENGTH_LONG).show();
-                startUpdatesButtonHandler(v);
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Network Location Services Stopped", Toast.LENGTH_LONG).show();
+                stopUpdatesButtonHandler(v);
 
             }
         });
+
+        mExportDatabase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Network Location Services exported", Toast.LENGTH_LONG).show();
+                exportDatabaseToSdCard(v);
+
+            }
+        });
+
+        return view;
+    }
 
 
         /**
@@ -109,8 +122,8 @@ public class continuousLocationFragment extends Fragment {
         if (!mIsServiceStarted) {
             mIsServiceStarted = true;
             setButtonsEnabledState();
-            OnGoingLocationNotification(this);
-            startService(new Intent(this, LocationUpdateService.class));
+            OnGoingLocationNotification(getActivity());
+            getActivity().startService(new Intent(new Intent(getActivity(), LocationUpdateService.class)));
         }
     }
 
@@ -137,21 +150,21 @@ public class continuousLocationFragment extends Fragment {
         if (mIsServiceStarted) {
             mIsServiceStarted = false;
             setButtonsEnabledState();
-            cancelNotification(this, notifID);
-            stopService(new Intent(this, LocationUpdateService.class));
+            cancelNotification(getActivity(), notifID);
+            getActivity().stopService(new Intent(new Intent(new Intent(getActivity(), LocationUpdateService.class))));
         }
     }
 
     public void exportDatabaseToSdCard(View view) {
-        Const.ExportDatabase(this);
+        Const.ExportDatabase(getActivity());
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        if (getIntent().getAction() != null) {
-            action = getIntent().getAction();
-            notifID = getIntent().getIntExtra(EXTRA_NOTIFICATION_ID, 0);
+        if (getActivity().getIntent().getAction() != null) {
+            action = getActivity().getIntent().getAction();
+            notifID = getActivity().getIntent().getIntExtra(EXTRA_NOTIFICATION_ID, 0);
             if (action.equalsIgnoreCase(ACTION_FROM_NOTIFICATION)) {
                 mIsServiceStarted = true;
                 setButtonsEnabledState();
@@ -180,14 +193,14 @@ public class continuousLocationFragment extends Fragment {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mcontext)
                         .setSound(alarmSound)
-                        .setSmallIcon(R.drawable.ic_cast_off_light)
+                        //.setSmallIcon(R.drawable.ic_cast_off_light)
                         .setContentTitle("Location Service")
                         .addAction(R.drawable.ic_cancel, "Stop Service", pendingIntentStopService)
                         .setOngoing(true).setContentText("Running...");
         mBuilder.setAutoCancel(false);
 
         // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(mcontext, HomeActivity.class);
+        Intent resultIntent = new Intent(mcontext, continuousLocationFragment.class);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         resultIntent.setAction(ACTION_FROM_NOTIFICATION);
         resultIntent.putExtra(EXTRA_NOTIFICATION_ID, mNotificationId);
