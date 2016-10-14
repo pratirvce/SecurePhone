@@ -35,4 +35,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <string name="resume">Resume Location Updates</string>
+    <string name="pause">Pause Location Updates</string>
 </resources>

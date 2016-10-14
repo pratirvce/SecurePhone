@@ -1,63 +1,51 @@
 package com.sjsu.securephone.theftdetector;
 
-import android.os.Build;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.firebase.client.Firebase;
+import com.google.android.gms.analytics.Tracker;
 
 //import com.google.android.gms.ads.AdRequest;
 //import com.google.android.gms.ads.AdView;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by Group 7 on 10/11/2016.
  */
 
 public class LocationFragment extends Fragment {
+    LocationManager locationManager;
+    double longitudeBest, latitudeBest;
+    double longitudeGPS, latitudeGPS;
+    double longitudeNetwork, latitudeNetwork;
+    TextView longitudeValueBest, latitudeValueBest;
+    TextView longitudeValueGPS, latitudeValueGPS;
+    TextView longitudeValueNetwork, latitudeValueNetwork;
+    Button btntoggleNetworkUpdates;
+    Button btntoggleGPSUpdates;
+    Button btntoggleBestUpdates;
 
     private Tracker mTracker;
     private static final String ARG_TEXT = "text";
-    @Bind(R.id.text1)TextView t1;
-    @Bind(R.id.text2)TextView t2;
-    @Bind(R.id.text3)TextView t3;
-    @Bind(R.id.text4)TextView t4;
-    @Bind(R.id.text5)TextView t5;
-    @Bind(R.id.text6)TextView t6;
-    @Bind(R.id.text7)TextView t7;
-    @Bind(R.id.text8)TextView t8;
-    @Bind(R.id.text9)TextView t9;
-    @Bind(R.id.text10)TextView t10;
-    @Bind(R.id.text11)TextView t11;
-    @Bind(R.id.text12)TextView t12;
-    @Bind(R.id.text13)TextView t13;
-    @Bind(R.id.text14)TextView t14;
-    @Bind(R.id.text15)TextView t15;
-    @Bind(R.id.text16)TextView t16;
-    @Bind(R.id.text17)TextView t17;
-    @Bind(R.id.text18)TextView t18;
-    @Bind(R.id.text19)TextView t19;
-    @Bind(R.id.text20)TextView t20;
-    @Bind(R.id.text21)TextView t21;
-    @Bind(R.id.text22)TextView t22;
-    @Bind(R.id.text23)TextView t23;
-    public LocationFragment() {
-    }
 
-    public static LocationFragment newInstance(String text) {
-        LocationFragment fragment = new LocationFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ARG_TEXT, text);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
+    private static final String TAG = "LocationFragment";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,51 +54,278 @@ public class LocationFragment extends Fragment {
         View view = inflater.inflate(R.layout.location_info, container, false);
         /*Google Analytics: send screen Name*/
 
-        // Obtain the shared Tracker instance.
-        AnalyticsActivity application = (AnalyticsActivity) getActivity().getApplication();
-        mTracker = application.getTracker(AnalyticsActivity.TrackerName.APP_TRACKER);
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        // Send a screen view.
-        mTracker.setScreenName("Build Info");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        mTracker.send(new HitBuilders.ScreenViewBuilder()
-                .set("BuildInfo", "Build Info")
-                .build());
 
-        /*AdView mAdView = (AdView) view.findViewById(R.id.adView2);
+        longitudeValueBest = (TextView) view.findViewById(R.id.longitudeValueBest);
+        latitudeValueBest = (TextView) view.findViewById(R.id.latitudeValueBest);
+        longitudeValueGPS = (TextView) view.findViewById(R.id.longitudeValueGPS);
+        latitudeValueGPS = (TextView) view.findViewById(R.id.latitudeValueGPS);
+        longitudeValueNetwork = (TextView) view.findViewById(R.id.longitudeValueNetwork);
+        latitudeValueNetwork = (TextView) view.findViewById(R.id.latitudeValueNetwork);
+        btntoggleNetworkUpdates = (Button)view.findViewById(R.id.locationControllerNetwork);
+        btntoggleNetworkUpdates.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Toast.makeText(getActivity(),"Your message.", Toast.LENGTH_LONG).show();
+                toggleNetworkUpdates(v);
 
-        AdRequest adRequest = new AdRequest.Builder().build();
+            }
+        });
 
-        mAdView.loadAd(adRequest);*/
-        Log.d("on detail create view", Build.BOARD);
-        //GENERAL
-        ButterKnife.bind(this, view);
-        t1.setText(Build.BOARD);
-        t2.setText(Build.BOOTLOADER);
-        t3.setText(Build.BRAND);
-        t4.setText(Build.CPU_ABI);
-        t5.setText(Build.CPU_ABI2);
-        t6.setText(Build.DEVICE);
-        t7.setText(Build.DISPLAY);
-        t8.setText(Build.FINGERPRINT);
-        t9.setText(Build.HARDWARE);
-        t10.setText(Build.HOST);
-        t11.setText(Build.ID);
-        t12.setText(Build.MANUFACTURER);
-        t13.setText(Build.MODEL);
-        t14.setText(Build.PRODUCT);
-        t15.setText(Build.SERIAL);
-        t16.setText(Build.TAGS);
-        t17.setText(Build.TYPE);
-        t18.setText(Build.USER);
-        t19.setText(Build.VERSION.CODENAME);
-        t20.setText(Build.VERSION.INCREMENTAL);
-        t21.setText(Build.VERSION.RELEASE);
-        t22.setText(String.valueOf(Build.VERSION.SDK_INT));
-        t23.setText(Build.getRadioVersion());
+        btntoggleGPSUpdates = (Button)view.findViewById(R.id.locationControllerGPS);
+        btntoggleGPSUpdates.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Toast.makeText(getActivity(),"Your message.", Toast.LENGTH_LONG).show();
+                toggleGPSUpdates(v);
+
+            }
+        });
+
+        btntoggleBestUpdates = (Button)view.findViewById(R.id.locationControllerBest);
+        btntoggleBestUpdates.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Toast.makeText(getActivity(),"Your message.", Toast.LENGTH_LONG).show();
+                toggleBestUpdates(v);
+
+            }
+        });
 
         return view;
     }
-}
+    private boolean checkLocation() {
+        if (!isLocationEnabled())
+            showAlert();
+        return isLocationEnabled();
+    }
+    private void showAlert() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setTitle("Enable Location")
+                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
+                        "use this app")
+                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    }
+                });
+        dialog.show();
+    }
 
+    private boolean isLocationEnabled() {
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    public void toggleGPSUpdates(View view) {
+        if(!checkLocation())
+            return;
+        Button button = (Button) view;
+        if(button.getText().equals(getResources().getString(R.string.pause))) {
+            try {
+                locationManager.removeUpdates(locationListenerGPS);
+                button.setText(R.string.resume);
+            }
+            catch(SecurityException e){
+                Log.e(TAG, "Location permission issue.");
+            }
+
+        }
+        else {
+            try {
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, 2 * 60 * 1000, 10, locationListenerGPS);
+                button.setText(R.string.pause);
+            }catch(SecurityException e){
+                Log.e(TAG, "Location permission issue.");
+            }
+
+        }
+    }
+
+    public void toggleBestUpdates(View view) {
+        if(!checkLocation())
+            return;
+        Button button = (Button) view;
+        if(button.getText().equals(getResources().getString(R.string.pause))) {
+            try {
+                locationManager.removeUpdates(locationListenerBest);
+                button.setText(R.string.resume);
+            } catch (SecurityException e) {
+                Log.e(TAG, "Location permission issue.");
+            }
+        }
+        else {
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setAltitudeRequired(false);
+            criteria.setBearingRequired(false);
+            criteria.setCostAllowed(true);
+            criteria.setPowerRequirement(Criteria.POWER_LOW);
+            String provider = locationManager.getBestProvider(criteria, true);
+            if(provider != null) {
+                try{
+                    locationManager.requestLocationUpdates(provider, 2 * 60 * 1000, 10, locationListenerBest);
+                    button.setText(R.string.pause);
+                    Toast.makeText(getActivity(), "Best Provider is " + provider, Toast.LENGTH_LONG).show();
+                }catch(SecurityException e){
+                    Log.e(TAG, "Location permission issue.");
+                }
+            }
+        }
+    }
+
+
+    public void toggleNetworkUpdates(View view) {
+        if(!checkLocation())
+            return;
+        Button button = (Button) view;
+        if(button.getText().equals(getResources().getString(R.string.pause))) {
+            try{
+                locationManager.removeUpdates(locationListenerNetwork);
+                button.setText(R.string.resume);
+            }catch(SecurityException e){
+                Log.e(TAG, "Location permission issue.");
+            }
+        }
+        else {
+            try{
+                locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER, 60 * 1000, 10, locationListenerNetwork);
+                Toast.makeText(getActivity(), "Network provider started running", Toast.LENGTH_LONG).show();
+                button.setText(R.string.pause);
+            }catch(SecurityException e){
+                Log.e(TAG, "Location permission issue.");
+            }
+        }
+    }
+
+
+    private final LocationListener locationListenerBest = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            longitudeBest = location.getLongitude();
+            latitudeBest = location.getLatitude();
+
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    longitudeValueBest.setText(longitudeBest + "");
+                    latitudeValueBest.setText(latitudeBest + "");
+                    //Creating firebase object
+                    Firebase.setAndroidContext(getActivity());
+                    Firebase ref = new Firebase(Config.FIREBASE_URL);
+                    //Storing values to firebase
+                    ref.child("currLoc/Longitude").setValue(longitudeBest);
+                    ref.child("currLoc/Latitude").setValue(latitudeBest);
+                    Toast.makeText(getActivity(), "Best Provider update", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
+    private final LocationListener locationListenerNetwork = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            longitudeNetwork = location.getLongitude();
+            latitudeNetwork = location.getLatitude();
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    longitudeValueNetwork.setText(longitudeNetwork + "");
+                    latitudeValueNetwork.setText(latitudeNetwork + "");
+                    //Creating firebase object
+                    Firebase.setAndroidContext(getActivity());
+                    Firebase ref = new Firebase(Config.FIREBASE_URL);
+                    //Storing values to firebase
+                    ref.child("currLoc/Longitude").setValue(longitudeNetwork);
+                    ref.child("currLoc/Latitude").setValue(latitudeNetwork);
+                    Toast.makeText(getActivity(), "Network Provider update", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
+    private final LocationListener locationListenerGPS = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            longitudeGPS = location.getLongitude();
+            latitudeGPS = location.getLatitude();
+
+            //Creating firebase object
+            Firebase.setAndroidContext(getActivity());
+            Firebase ref = new Firebase(Config.FIREBASE_URL);
+            //Storing values to firebase
+            ref.child("currLoc/Longitude").setValue(longitudeGPS);
+            ref.child("currLoc/Latitude").setValue(latitudeGPS);
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    longitudeValueGPS.setText(longitudeGPS + "");
+                    latitudeValueGPS.setText(latitudeGPS + "");
+                    //Creating firebase object
+                    Firebase.setAndroidContext(getActivity());
+                    Firebase ref = new Firebase(Config.FIREBASE_URL);
+                    //Storing values to firebase
+                    ref.child("Longitude").setValue(longitudeGPS);
+                    ref.child("Latitude").setValue(latitudeGPS);
+                    Toast.makeText(getActivity(), "GPS Provider update", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
+}
 

@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new SIMDetectorFragment(), "SIM Info");
-        adapter.addFrag(new LocationFragment(), "Build Info");
+        adapter.addFrag(new LocationFragment(), "Location Info");
         viewPager.setAdapter(adapter);
     }
 
