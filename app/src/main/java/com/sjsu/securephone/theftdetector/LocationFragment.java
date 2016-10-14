@@ -67,7 +67,7 @@ public class LocationFragment extends Fragment {
         btntoggleNetworkUpdates.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Toast.makeText(getActivity(),"Your message.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"Network Location Services Started", Toast.LENGTH_LONG).show();
                 toggleNetworkUpdates(v);
 
             }
@@ -77,7 +77,7 @@ public class LocationFragment extends Fragment {
         btntoggleGPSUpdates.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Toast.makeText(getActivity(),"Your message.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"GPS Location Services Started", Toast.LENGTH_LONG).show();
                 toggleGPSUpdates(v);
 
             }
@@ -87,7 +87,7 @@ public class LocationFragment extends Fragment {
         btntoggleBestUpdates.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Toast.makeText(getActivity(),"Your message.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"Best Location Services Started", Toast.LENGTH_LONG).show();
                 toggleBestUpdates(v);
 
             }
