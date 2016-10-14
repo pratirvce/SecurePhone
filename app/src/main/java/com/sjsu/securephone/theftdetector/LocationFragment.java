@@ -221,6 +221,7 @@ public class LocationFragment extends Fragment {
                     longitudeValueBest.setText(longitudeBest + "");
                     latitudeValueBest.setText(latitudeBest + "");
                     //Creating firebase object
+                    Firebase.setAndroidContext(getActivity());
                     Firebase ref = new Firebase(Config.FIREBASE_URL);
                     //Storing values to firebase
                     ref.child("currLoc/Longitude").setValue(longitudeBest);
@@ -256,6 +257,7 @@ public class LocationFragment extends Fragment {
                     longitudeValueNetwork.setText(longitudeNetwork + "");
                     latitudeValueNetwork.setText(latitudeNetwork + "");
                     //Creating firebase object
+                    Firebase.setAndroidContext(getActivity());
                     Firebase ref = new Firebase(Config.FIREBASE_URL);
                     //Storing values to firebase
                     ref.child("currLoc/Longitude").setValue(longitudeNetwork);
@@ -287,6 +289,7 @@ public class LocationFragment extends Fragment {
             latitudeGPS = location.getLatitude();
 
             //Creating firebase object
+            Firebase.setAndroidContext(getActivity());
             Firebase ref = new Firebase(Config.FIREBASE_URL);
             //Storing values to firebase
             ref.child("currLoc/Longitude").setValue(longitudeGPS);
@@ -298,6 +301,7 @@ public class LocationFragment extends Fragment {
                     longitudeValueGPS.setText(longitudeGPS + "");
                     latitudeValueGPS.setText(latitudeGPS + "");
                     //Creating firebase object
+                    Firebase.setAndroidContext(getActivity());
                     Firebase ref = new Firebase(Config.FIREBASE_URL);
                     //Storing values to firebase
                     ref.child("Longitude").setValue(longitudeGPS);
