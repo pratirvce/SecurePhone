@@ -1,4 +1,4 @@
-package com.sjsu.securephone.theftdetector.database;
+package com.sjsu.securephone.theftdetector;
 
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
