@@ -16,9 +16,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.sample.locationupdates.Utils.Const;
-import com.google.android.gms.location.sample.locationupdates.Utils.LocationVo;
-import com.google.android.gms.location.sample.locationupdates.database.LocationDBHelper;
+import com.sjsu.securephone.theftdetector.Utils.Const;
+import com.sjsu.securephone.theftdetector.Utils.LocationVo;
+import com.sjsu.securephone.theftdetector.database.LocationDBHelper;
+
 
 import java.io.IOException;
 import java.text.DateFormat;

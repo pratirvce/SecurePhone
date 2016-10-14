@@ -22,10 +22,10 @@ public class NotificationHandler extends BroadcastReceiver {
         String action = intent.getAction(); //Get the button actions
 
         if (!TextUtils.isEmpty(action)) {
-            int notifId = intent.getIntExtra(HomeActivity.EXTRA_NOTIFICATION_ID, 0);
+            int notifId = intent.getIntExtra(continuousLocationFragment.EXTRA_NOTIFICATION_ID, 0);
             Log.v(TAG + "=======", "Notification id==" + notifId);
             Intent mintent = new Intent(context, LocationUpdateService.class);
-            if (action.equalsIgnoreCase(HomeActivity.ACTION_STOP)) {
+            if (action.equalsIgnoreCase(continuousLocationFragment.ACTION_STOP)) {
                 Log.v(TAG + "=======", "Pressed YES");
 
                 if (LocationUpdateService.isEnded) {
