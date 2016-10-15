@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.gsm.SmsManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,12 +19,19 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 public class DialogActivity extends AppCompatActivity {
 
     private static final String TAG = "DialogActivity";
     private Context context;
     private SharedPreferences sharedPref;
     EditText editTextPassword;
+
+    static HashMap<String, String> recorArray = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +45,8 @@ public class DialogActivity extends AppCompatActivity {
         // initialize SharedPreferences
         context = this;
         sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        recorArray = new HashMap<String, String>();
 
         Log.d(TAG, "onCreate()");
     }
@@ -58,8 +69,35 @@ public class DialogActivity extends AppCompatActivity {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("result",false);
                 setResult(Activity.RESULT_CANCELED,returnIntent);
-                Log.e(TAG, "User entered incorrect password");
+                sendNotification();
                 finish();
+            }
+        }
+    }
+
+    public void sendNotification() {
+        Log.d("WTFWTF", "WTFWTF");
+
+        String email = sharedPref.getString("pref_email", "");
+        String notification = "Unauthorized attempted at powering device off.";
+        recorArray.put(email, notification);
+
+        Set<?> set = recorArray.entrySet();
+        Iterator<?> i = set.iterator();
+
+        while (i.hasNext()) {
+            @SuppressWarnings("rawtypes")
+            Map.Entry me = (Map.Entry) i.next();
+            System.out.print(me.getKey() + ": ");
+            System.out.println(me.getValue());
+
+            try {
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(email, null, notification, null, null);
+                System.out.println("message sent");
+            } catch (Exception e) {
+                System.out.println("sending failed!");
+                e.printStackTrace();
             }
         }
     }
@@ -71,6 +109,7 @@ public class DialogActivity extends AppCompatActivity {
         setResult(Activity.RESULT_OK,returnIntent);
         finish();
     }
+
 
     @Override
     protected void onDestroy(){
