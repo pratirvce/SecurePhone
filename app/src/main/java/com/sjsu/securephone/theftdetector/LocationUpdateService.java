@@ -37,9 +37,10 @@ import java.util.Locale;
 public class LocationUpdateService extends Service implements
           GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    String deviceId;
     private android.content.Context context;
     private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
+    String deviceId;
 
     ArrayList<String> addressFragments = new ArrayList<String>();
     protected static final String TAG = "LocationUpdateService";
@@ -90,9 +91,6 @@ public class LocationUpdateService extends Service implements
         super.onCreate();
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
-        context = this;
-        sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), android.content.Context.MODE_PRIVATE);
-        deviceId = sharedPref.getString(getString(R.string.preferences_device_id), "null");
     }
 
     @Nullable
@@ -262,6 +260,8 @@ public class LocationUpdateService extends Service implements
         Firebase ref = new Firebase(Config.FIREBASE_URL);
         //Storing values to firebase
         Long tsLong = System.currentTimeMillis()/1000;
+        sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), android.content.Context.MODE_PRIVATE);
+        deviceId = sharedPref.getString(getString(R.string.preferences_device_id), "null");
         ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Longitude").setValue(mCurrentLocation.getLongitude());
         ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Latitude").setValue(mCurrentLocation.getLatitude());
         ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Address").setValue(addressFragments.toString());
