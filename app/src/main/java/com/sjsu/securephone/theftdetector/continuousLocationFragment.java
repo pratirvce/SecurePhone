@@ -39,8 +39,6 @@ import com.sjsu.securephone.theftdetector.Utils.Const;
 
 public class continuousLocationFragment extends Fragment {
 
-
-
     protected Button mStartUpdatesButton, mStopUpdatesButton, mExportDatabase;
     private boolean mIsServiceStarted = false;
     public static final String EXTRA_NOTIFICATION_ID = "notification_id";
