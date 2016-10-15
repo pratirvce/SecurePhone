@@ -6,4 +6,11 @@ package com.sjsu.securephone.theftdetector;
 
 public class Config {
     public static final String FIREBASE_URL = "https://securephone-b36f4.firebaseio.com/";
+
+
+    /*
+    public void testDemo() {
+        i = i+1
+    }
+   */
 }
