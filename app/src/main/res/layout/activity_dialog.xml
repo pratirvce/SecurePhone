@@ -7,7 +7,7 @@
     android:layout_alignParentBottom="true"
     android:layout_alignParentTop="true"
     android:padding="12dip"
-    android:background="#f023">
+    android:background="@color/blue">
 
     <EditText
         android:layout_width="wrap_content"
@@ -20,6 +20,7 @@
         android:layout_marginTop="16dp"
         android:id="@+id/editTextPassword"
         android:hint="password"
+        android:padding="10dp"
         tools:background="@color/carbon_background_light"
         android:layout_alignRight="@+id/button_no"
         android:layout_alignEnd="@+id/button_no"
@@ -31,8 +32,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp"
+        android:padding="30dp"
+        android:layout_margin="0dp"
+        android:textStyle="bold"
         android:id="@+id/textViewPassword"
-        android:textColor="@color/carbon_background_light"
+        android:textColor="@android:color/black"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -41,6 +45,7 @@
 
     <Button
         android:id="@+id/button_yes"
+        android:background="@drawable/grey_button"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="Enter"
@@ -61,6 +66,7 @@
         android:layout_gravity="center_horizontal"
         android:onClick="onCancel"
         android:layout_marginRight="59dp"
+        android:background="@drawable/grey_button"
         android:layout_marginEnd="59dp"
         android:layout_alignBaseline="@+id/button_yes"
         android:layout_alignBottom="@+id/button_yes"

@@ -84,7 +84,7 @@ public class continuousLocationFragment extends Fragment {
 //       mIsServiceStarted = false;
         mStartUpdatesButton = (Button) view.findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) view.findViewById(R.id.stop_updates_button);
-        mExportDatabase = (Button) view.findViewById(R.id.export_button);
+       // mExportDatabase = (Button) view.findViewById(R.id.export_button);
 
         mStartUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,14 +103,14 @@ public class continuousLocationFragment extends Fragment {
             }
         });
 
-        mExportDatabase.setOnClickListener(new View.OnClickListener() {
+       /* mExportDatabase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Network Location Services exported", Toast.LENGTH_LONG).show();
                 exportDatabaseToSdCard(v);
 
             }
-        });
+        }); */
 
         return view;
     }
