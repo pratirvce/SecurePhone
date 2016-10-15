@@ -32,7 +32,6 @@ public class DialogActivity extends AppCompatActivity {
     EditText editTextPassword;
 
     static HashMap<String, String> recorArray = null;
-    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +45,8 @@ public class DialogActivity extends AppCompatActivity {
         // initialize SharedPreferences
         context = this;
         sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        recorArray = new HashMap<String, String>();
 
         Log.d(TAG, "onCreate()");
     }
@@ -68,7 +69,6 @@ public class DialogActivity extends AppCompatActivity {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("result",false);
                 setResult(Activity.RESULT_CANCELED,returnIntent);
-                Log.e(TAG, "User entered incorrect password");
                 sendNotification();
                 finish();
             }
@@ -76,13 +76,15 @@ public class DialogActivity extends AppCompatActivity {
     }
 
     public void sendNotification() {
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        editor = sharedPref.edit();
+        Log.d("WTFWTF", "WTFWTF");
+
+        String email = sharedPref.getString("pref_email", "");
+        String notification = "Unauthorized attempted at powering device off.";
+        recorArray.put(email, notification);
+
         Set<?> set = recorArray.entrySet();
-        // Get an iterator
         Iterator<?> i = set.iterator();
-        recorArray = new HashMap<String, String>();
-        // Display elements
+
         while (i.hasNext()) {
             @SuppressWarnings("rawtypes")
             Map.Entry me = (Map.Entry) i.next();
@@ -91,7 +93,7 @@ public class DialogActivity extends AppCompatActivity {
 
             try {
                 SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(sharedPref.getString("pref_email",""), null, "THIS IS A NOTIFCATION", null, null);
+                smsManager.sendTextMessage(email, null, notification, null, null);
                 System.out.println("message sent");
             } catch (Exception e) {
                 System.out.println("sending failed!");
