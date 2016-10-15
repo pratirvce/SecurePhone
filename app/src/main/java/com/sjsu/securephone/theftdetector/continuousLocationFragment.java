@@ -39,6 +39,8 @@ import com.sjsu.securephone.theftdetector.Utils.Const;
 
 public class continuousLocationFragment extends Fragment {
 
+
+
     protected Button mStartUpdatesButton, mStopUpdatesButton, mExportDatabase;
     private boolean mIsServiceStarted = false;
     public static final String EXTRA_NOTIFICATION_ID = "notification_id";
@@ -48,6 +50,7 @@ public class continuousLocationFragment extends Fragment {
 //    public static final String ACTION_DISMISS = "DISMISS_ACTION";
     private String action;
     private int notifID;
+
 
     LocationManager locationManager;
     double longitudeBest, latitudeBest;
@@ -78,7 +81,7 @@ public class continuousLocationFragment extends Fragment {
         View view = inflater.inflate(R.layout.continuous_location_fragment, container, false);
 
         // Locate the UI widgets.
-//        mIsServiceStarted = false;
+//       mIsServiceStarted = false;
         mStartUpdatesButton = (Button) view.findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) view.findViewById(R.id.stop_updates_button);
         mExportDatabase = (Button) view.findViewById(R.id.export_button);
@@ -88,7 +91,6 @@ public class continuousLocationFragment extends Fragment {
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Network Location Services Started", Toast.LENGTH_LONG).show();
                 startUpdatesButtonHandler(v);
-
             }
         });
 

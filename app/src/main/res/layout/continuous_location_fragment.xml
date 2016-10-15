@@ -30,6 +30,7 @@ android:paddingTop="@dimen/activity_vertical_margin">
     android:orientation="horizontal">
 
     <Button
+
         android:id="@+id/start_updates_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -37,7 +38,7 @@ android:paddingTop="@dimen/activity_vertical_margin">
         android:layout_marginRight="10dp"
         android:layout_weight="1"
         android:gravity="center"
-
+        android:background="@drawable/grey_button"
         android:text="@string/start_updates"/>
 
     <Button
@@ -48,22 +49,24 @@ android:paddingTop="@dimen/activity_vertical_margin">
         android:layout_marginStart="@dimen/small_margin"
         android:layout_weight="1"
         android:enabled="false"
+        android:background="@drawable/grey_button"
         android:gravity="center"
 
         android:text="@string/stop_updates"/>
 </LinearLayout>
 
-<Button
-    android:id="@+id/export_button"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="10dp"
-    android:layout_marginRight="10dp"
-    android:gravity="center"
+    <Button
+        android:background="@drawable/grey_button"
+        android:id="@+id/export_button"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="35dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:text="Export database"/>
 
-    android:text="Export database"/>
-
-<TextView
+    <TextView
     android:id="@+id/latitude_text"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

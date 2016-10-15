@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
+import com.firebase.client.core.Context;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -34,6 +36,7 @@ import java.util.Locale;
 public class LocationUpdateService extends Service implements
           GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    String deviceId;
     ArrayList<String> addressFragments = new ArrayList<String>();
     protected static final String TAG = "LocationUpdateService";
     /**
@@ -246,7 +249,15 @@ public class LocationUpdateService extends Service implements
                   ());
         Toast.makeText(this, addressFragments.toString() + "Lcation", Toast.LENGTH_SHORT).show();
 
-        LocationDBHelper.getInstance(this).insertLocationDetails(mLocationData);
+        //LocationDBHelper.getInstance(this).insertLocationDetails(mLocationData);
+
+        Firebase.setAndroidContext(this);
+        Firebase ref = new Firebase(Config.FIREBASE_URL);
+        //Storing values to firebase
+        Long tsLong = System.currentTimeMillis()/1000;
+        ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Longitude").setValue(mCurrentLocation.getLongitude());
+        ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Latitude").setValue(mCurrentLocation.getLatitude());
+        ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Address").setValue(addressFragments.toString());
     }
 
 
@@ -289,8 +300,7 @@ public class LocationUpdateService extends Service implements
 
             // The final argument to {@code requestLocationUpdates()} is a LocationListener
             // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                      mGoogleApiClient, mLocationRequest, this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             Log.i(TAG, " startLocationUpdates===");
             isEnded = true;
         }
