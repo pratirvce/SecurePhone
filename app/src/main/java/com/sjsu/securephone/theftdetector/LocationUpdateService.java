@@ -2,6 +2,7 @@ package com.sjsu.securephone.theftdetector;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -36,7 +37,11 @@ import java.util.Locale;
 public class LocationUpdateService extends Service implements
           GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    private android.content.Context context;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
     String deviceId;
+
     ArrayList<String> addressFragments = new ArrayList<String>();
     protected static final String TAG = "LocationUpdateService";
     /**
@@ -255,6 +260,8 @@ public class LocationUpdateService extends Service implements
         Firebase ref = new Firebase(Config.FIREBASE_URL);
         //Storing values to firebase
         Long tsLong = System.currentTimeMillis()/1000;
+        sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), android.content.Context.MODE_PRIVATE);
+        deviceId = sharedPref.getString(getString(R.string.preferences_device_id), "null");
         ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Longitude").setValue(mCurrentLocation.getLongitude());
         ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Latitude").setValue(mCurrentLocation.getLatitude());
         ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Address").setValue(addressFragments.toString());
