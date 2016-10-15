@@ -5,6 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+/**
+ * Created by Group 7 on 10/11/2016.
+ */
+
 public class BootCompleteReceiver extends BroadcastReceiver {
 
     private static final String TAG = "BootCompleteReceiver";

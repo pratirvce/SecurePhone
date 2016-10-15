@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements
             System.exit(0);
             return true;
         }
-        if(id==R.id.action_share){
+       /* if(id==R.id.action_share){
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             String shareBody = getString(R.string.share_text);
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements
             startActivity(Intent.createChooser(sharingIntent, "Share via"));
 
 
-        }
+        } */
         return super.onOptionsItemSelected(item);
     }
     public void readSMSPerm() {
