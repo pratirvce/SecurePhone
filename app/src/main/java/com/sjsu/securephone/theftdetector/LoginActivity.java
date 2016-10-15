@@ -43,7 +43,6 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class LoginActivity extends Activity {
 
 
-    // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -60,11 +59,9 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        // initialize SharedPreferences
         context = this;
         sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         editor = sharedPref.edit();
@@ -89,7 +86,6 @@ public class LoginActivity extends Activity {
             editor.putBoolean(getString(R.string.preference_logged_on_key), true);
             editor.commit();
 
-            // also update email and password to firebase here
             if( (deviceId != null) && (!deviceId.isEmpty()) ){
                 Firebase.setAndroidContext(this);
                 Firebase ref = new Firebase(Config.FIREBASE_URL);

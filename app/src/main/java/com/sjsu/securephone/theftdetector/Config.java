@@ -1,7 +1,7 @@
 package com.sjsu.securephone.theftdetector;
 
 /**
- * Created by nosie on 10/12/2016.
+ * Created by Group 7 on 10/11/2016.
  */
 
 public class Config {
