@@ -58,7 +58,6 @@ public class LocationFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.location_info, container, false);
-        /*Google Analytics: send screen Name*/
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
@@ -323,8 +322,6 @@ public class LocationFragment extends Fragment {
                     Long tsLong = System.currentTimeMillis()/1000;
                     ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Longitude").setValue(longitudeGPS);
                     ref.child(deviceId).child("tracking").child(tsLong.toString()).child("Latitude").setValue(latitudeGPS);
-//                    ref.child("Longitude").setValue(longitudeGPS);
-//                    ref.child("Latitude").setValue(latitudeGPS);
                     Toast.makeText(getActivity(), "GPS Provider update", Toast.LENGTH_SHORT).show();
                 }
             });

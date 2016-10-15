@@ -39,10 +39,8 @@ public class DialogActivity extends AppCompatActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_dialog);
 
-        // initialize the view
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
 
-        // initialize SharedPreferences
         context = this;
         sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
@@ -76,8 +74,6 @@ public class DialogActivity extends AppCompatActivity {
     }
 
     public void sendNotification() {
-        Log.d("WTFWTF", "WTFWTF");
-
         String email = sharedPref.getString("pref_email", "");
         String notification = "Unauthorized attempted at powering device off.";
         recorArray.put(email, notification);

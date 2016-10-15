@@ -49,29 +49,18 @@ public class SIMDetectorFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.sim_detector, container, false);
 
-        /*Google Analytics: send screen Name*/
-
-        // Obtain the shared Tracker instance.
         AnalyticsActivity application = (AnalyticsActivity) getActivity().getApplication();
         mTracker = application.getTracker(AnalyticsActivity.TrackerName.APP_TRACKER);
 
-        // Send a screen view.
         mTracker.setScreenName("SIM Info");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         mTracker.send(new HitBuilders.ScreenViewBuilder()
                 .set("SIMInfo", "SIM Info")
                 .build());
 
-        /*
-        AdView mAdView = (AdView) view.findViewById(R.id.adView1);
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        mAdView.loadAd(adRequest);*/
 
         Log.d("on detail create view", "created");
         ButterKnife.bind(this, view);
-        //GENERAL
 
         TelephonyManager manager=(TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
         t1.setText(manager.getSimCountryIso());

@@ -9,7 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 /**
- * Created by Grishma on 19/11/15.
+ * Created by Group 7 on 10/11/2016.
  */
 public class NotificationHandler extends BroadcastReceiver {
     private Context mContxt;
@@ -19,7 +19,7 @@ public class NotificationHandler extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         mContxt = context;
 
-        String action = intent.getAction(); //Get the button actions
+        String action = intent.getAction();
 
         if (!TextUtils.isEmpty(action)) {
             int notifId = intent.getIntExtra(continuousLocationFragment.EXTRA_NOTIFICATION_ID, 0);
@@ -35,42 +35,10 @@ public class NotificationHandler extends BroadcastReceiver {
                     cancelNotification(context, notifId);
                 }
             }
-//            else {
-//                        long endDuration = mEvent.getEnd_time() - System.currentTimeMillis();
-//                        Log.v(TAG + "=======", "End duration===" + endDuration);
-//                        if (endDuration > 0) {
-//                Log.v(TAG + "=======", "Event not expired");
-//                context.startService(mintent);
-//                        } else {
-//                            context.stopService(mintent);
-//                            Toast.makeText(context, R.string.lbl_event_expired, Toast.LENGTH_SHORT).show();
-//                            Log.v(TAG + " Else=======", "  Event expired");
-//                            cancelNotification(context, notifId);
-//                        }
-//            }
-//                        }
-//            }
-//            else if (action.equalsIgnoreCase(Const.ACTION_DISMISS)) {
-//                Log.v(TAG + "=======", "Pressed Dismissed");
-//                context.stopService(mintent);
-//                cancelNotification(context, notifId);
-//            }
-//                } else {
-//                    Toast.makeText(context, R.string.event_has_been_deleted, Toast.LENGTH_SHORT).show();
-//                    context.stopService(new Intent(context, BubblesService.class));
-//                    cancelNotification(context, notifId);
-//                }
-//        }
         }
 
     }
 
-    /**
-     * Cancel the notification
-     *
-     * @param mContext
-     * @param mnotinotifId
-     */
     private void cancelNotification(Context mContext, int mnotinotifId) {
         NotificationManager manager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(mnotinotifId);
